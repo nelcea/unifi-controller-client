@@ -1,0 +1,38 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+}
+
+group = 'be.nelcea'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.11'
+
+repositories {
+    // Use jcenter for resolving dependencies.
+    // You can declare any Maven/Ivy/file repository here.
+    jcenter()
+}
+
+dependencies {
+    implementation 'com.fasterxml.jackson.jr:jackson-jr-objects:2.10.3'
+    implementation 'org.slf4j:slf4j-api:1.7.30'
+
+    // Use JUnit Jupiter API for testing.
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.2'
+
+    // Use JUnit Jupiter Engine for testing.
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.5.2'
+}
+
+test {
+    // Use junit platform for unit tests
+    useJUnitPlatform()
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+        }
+    }
+}
