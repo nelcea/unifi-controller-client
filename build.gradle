@@ -1,7 +1,18 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.bmuschko:gradle-nexus-plugin:2.3.1'
+    }
+}
+
 plugins {
     id 'java-library'
     id 'maven-publish'
 }
+
+apply plugin: 'com.bmuschko.nexus'
 
 group = 'be.nelcea'
 version = '0.0.3'
@@ -27,6 +38,43 @@ dependencies {
 test {
     // Use junit platform for unit tests
     useJUnitPlatform()
+}
+
+modifyPom {
+    project {
+        name 'unifi-controller-client'
+        description 'Java library for communication with Ubiquiti UniFi controller'
+        url 'https://github.com/nelcea/unifi-controller-client'
+        inceptionYear '2020'
+
+        scm {
+            url 'https://github.com/nelcea/unifi-controller-client'
+            connection 'scm:https://github.com/nelcea/unifi-controller-client.git'
+            developerConnection 'scm:git@github.com:nelcea/unifi-controller-client.git'
+        }
+
+        licenses {
+            license {
+                name 'The Apache Software License, Version 2.0'
+                url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                distribution 'repo'
+            }
+        }
+
+        developers {
+            developer {
+                id 'ebariaux'
+                name 'Eric Bariaux'
+                email 'ebariaux@nelcea.be'
+            }
+        }
+    }
+}
+
+extraArchive {
+    sources = true
+    tests = false
+    javadoc = true
 }
 
 publishing {
