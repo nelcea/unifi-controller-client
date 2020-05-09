@@ -1,9 +1,8 @@
 package be.nelcea.unifi.model;
 
 /**
- * Java class description...
- * <p>
- * Date : 30/04/2020
+ * <p>Meta section of the response payload received from the UniFi API.
+ * <p>It has a similar structure for all API respones.
  *
  * @author Eric Bariaux
  */
@@ -12,6 +11,12 @@ public class ResponseMeta {
     private String rc;
     private String msg;
 
+    /**
+     * The return code of the operation response towards the UniFi API.
+     * "ok" when the operation was successful.
+     *
+     * @return a {@code String} with the error code of the operation response
+     */
     public String getRc() {
         return rc;
     }
@@ -20,6 +25,11 @@ public class ResponseMeta {
         this.rc = rc;
     }
 
+    /**
+     * The message of the operation response towards the UniFi API.
+     *
+     * @return a {@code String} with the message of the operation response
+     */
     public String getMsg() {
         return msg;
     }

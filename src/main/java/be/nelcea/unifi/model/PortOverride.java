@@ -4,23 +4,13 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Java class description...
- * <p>
- * Date : 30/04/2020
+ * <p>The port override configuration for a single port.
  *
  * @author Eric Bariaux
  */
 public class PortOverride {
 
     private Map<String, Object> rawMap;
-
-    /*
-    private int port_idx;
-    private String portconf_id;
-    private String name;
-    private PoEMode poe_mode;
-    private List port_security_mac_address;
-    */
 
     public PortOverride(Map<String, Object> rawMap) {
         this.rawMap = rawMap;
@@ -51,6 +41,7 @@ public class PortOverride {
     }
 
     /*
+      This is a sample JSON of what the API corresponding section contains.
         {
             "port_idx": 4,
             "portconf_id": "5e...b0", // 24 chars long
@@ -59,6 +50,14 @@ public class PortOverride {
             "port_security_mac_address": [
 
             ]
-        },
-     */
+        }
+
+        Initial idea was to store them as specific member variables but it does not brind any value at this stage
+        and storing elements in a Map is easier.
+            private int port_idx;
+            private String portconf_id;
+            private String name;
+            private PoEMode poe_mode;
+            private List port_security_mac_address;
+   */
 }

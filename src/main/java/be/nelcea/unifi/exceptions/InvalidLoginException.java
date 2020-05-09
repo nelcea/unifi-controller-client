@@ -1,9 +1,7 @@
 package be.nelcea.unifi.exceptions;
 
 /**
- * Java class description...
- * <p>
- * Date : 02/05/2020
+ * <p>Thrown to indicate that login failed.
  *
  * @author Eric Bariaux
  */

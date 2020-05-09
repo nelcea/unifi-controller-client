@@ -27,9 +27,9 @@ import java.time.Duration;
 import java.util.Properties;
 
 /**
- * Java class description...
- * <p>
- * Date : 29/04/2020
+ * <p>Allows communication with a Ubiquiti UniFi controller through its REST API.
+ * <p>It is necessary to login with proper credentials to perform operations on the controller.
+ * <p>The default site used is "default".
  *
  * @author Eric Bariaux
  */
@@ -43,12 +43,23 @@ public class UniFiController {
 
     private static final Logger LOG = LoggerFactory.getLogger(UniFiController.class);
 
-    // TODO: javadoc
-
+    /**
+     * Constructs a {@code UniFiController} for connecting to the controller at the given URL.
+     * The validity of the server certificate will be validated.
+     *
+     * @param baseURI a @{code String} with the base URL of the controller to connect to.
+     */
     public UniFiController(String baseURI) {
         this(baseURI, false);
     }
 
+    /**
+     * Constructs a {@code UniFiController} for connecting to the controller at the given URL.
+     * The {acode skipSecurityChecks} indicates whether the server certificate must be validated.
+     *
+     * @param baseURI a {@code String} with the base URL of the controller to connect to.
+     * @param skipSecurityChecks whether or not to validate the certificate of the controller
+     */
     public UniFiController(String baseURI, boolean skipSecurityChecks) {
         this.baseURI = baseURI;
 
@@ -79,10 +90,24 @@ public class UniFiController {
         }
     }
 
+    /**
+     * Changes the site to connec to.
+     *
+     * @param site a {@code String} indicating the site to connect to
+     */
     public void setSite(String site) {
         this.site = site;
     }
 
+    /**
+     * Logs into the controller with the provided credentials.
+     *
+     * @param username a {@code String} providing the username to use for connection
+     * @param password a {@code String} providing the password to user for connection
+     *
+     * @throws InvalidLoginException if the login is refused, most probably because of invalid credentials
+     * @throws OperationFailedException if the operation fails
+     */
     public void login(String username, String password) throws InvalidLoginException, OperationFailedException {
         // This call allows detection of UniFi OS, not used for now for UDM
         // HttpResponse<Response> response = executeRequest(emptyPostRequest(""));
@@ -91,7 +116,6 @@ public class UniFiController {
         java.net.http.HttpHeaders@2542b783 { {content-length=[0], date=[Thu, 30 Apr 2020 05:45:40 GMT], location=[/manage]} }
         Redirect to provided location /manage
          */
-
 
         try {
             String payload = JSON.std.asString(new Login(username, password));
@@ -106,6 +130,12 @@ public class UniFiController {
         }
     }
 
+    /**
+     * Logs out of the controller.
+     * Operations requiring to be authenticated will fail afterwards.
+     *
+     * @throws OperationFailedException if the operation fails
+     */
     public void logout() throws OperationFailedException {
         HttpResponse<Response> response = executeRequest(emptyPostRequest("/logout"));
 
@@ -118,6 +148,13 @@ public class UniFiController {
         return !cookieManager.getCookieStore().getCookies().isEmpty();
     }
 
+    /**
+     * Gets information about the device with the given MAC address.
+     *
+     * @param mac a {@code String} providing the MAC address of the device to get information about
+     * @return a {@code Response} object containing the requested information
+     * @throws OperationFailedException if the operation fails
+     */
     public Response listDevices(final String mac) throws OperationFailedException {
         HttpResponse<Response> response = executeRequest(getRequest("/api/s/" + site + "/stat/device/" + mac));
         if (response.statusCode() != 200) {
@@ -126,6 +163,13 @@ public class UniFiController {
         return response.body();
     }
 
+    /**
+     * Updates the configuration of the device with the given id.
+     *
+     * @param deviceId a {@code String} giving the id of device to be updated
+     * @param payload a {@code String} with the JSON payload to use for the update
+     * @throws OperationFailedException if the operation fails
+     */
     public void setDeviceSettingsBase(String deviceId, String payload) throws OperationFailedException {
         HttpResponse<Response> response = executeRequest(putRequest("/api/s/" + site + "/rest/device/" + deviceId, payload));
         // If invalid device id -> 400, {"meta":{"rc":"error","msg":"api.err.IdInvalid"},"data":[]}
@@ -175,7 +219,7 @@ public class UniFiController {
                 .build();
     }
 
-    public HttpResponse<Response> executeRequest(HttpRequest request) throws OperationFailedException {
+    private HttpResponse<Response> executeRequest(HttpRequest request) throws OperationFailedException {
         try {
             HttpResponse<Response> response = client.send(request, new JacksonJrBodyHandler<Response>(Response.class));
             LOG.trace("Request: " + request);
